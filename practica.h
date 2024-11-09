@@ -14,17 +14,11 @@ struct Servidor
 
 void inicializarServidor(struct Servidor *servidor)
 {
-    for (int i = 0; i < 5; i++)
-    {
-        if (i == 0)
-        {
-            servidor->taxis[i] = true;
-        }
-        else
-        {
-            servidor->taxis[i] = false;
-        }
-    }
+    servidor->taxis[0] = true;
+    servidor->taxis[1] = true;
+    servidor->taxis[2] = true;
+    servidor->taxis[3] = true;
+    servidor->taxis[4] = false;
     servidor->ganancias = 0;
     servidor->viajes = 0;
 }
@@ -44,36 +38,18 @@ void s_codificar(char *buffer, char *texto, int numero)
 
 int buscar_taxi(struct Servidor *servidor)
 {
-    // Inicializar la semilla para la generación de números aleatorios
-    srand(time(NULL));
-
-    int taxis_libres[5];
-    int count = 0;
-
-    // Recopilar todos los taxis libres
     for (int i = 0; i < 5; i++)
     {
         if (!servidor->taxis[i])
         {
-            taxis_libres[count] = i;
-            count++;
+            servidor->taxis[i] = true;
+
+            servidor->ganancias += PRECIO;
+            servidor->viajes++;
+            return i;
         }
     }
-
-    // Si no hay taxis libres, regresar -1
-    if (count == 0)
-    {
-        return -1;
-    }
-
-    // Seleccionar un taxi libre de manera aleatoria
-    int indice_aleatorio = rand() % count;
-
-    servidor->taxis[indice_aleatorio] = true;
-    servidor->viajes++;
-    servidor->ganancias += PRECIO;
-
-    return taxis_libres[indice_aleatorio];
+    return -1;
 }
 
 void terminar_viaje(struct Servidor *servidor, int placa)
